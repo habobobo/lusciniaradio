@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>My Music Room</title>
+<title>Luscinia Radio</title>
 
 <style>
 
@@ -15,59 +15,134 @@
     box-sizing: border-box;
 }
 
+:root {
+    --cover-size: 280px;
+    --cover-gap: 34px;
+}
+
 body {
+    min-height: 100vh;
+
     background: #f5f5f7;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "Segoe UI",
+        sans-serif;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
-    min-height: 100vh;
+    color: #111;
 }
 
+
+/* 整体播放器 */
+
 .player {
-    width: 420px;
+    width: min(980px, calc(100vw - 32px));
 
     background: white;
 
-    border-radius: 24px;
+    border-radius: 32px;
 
-    padding: 30px;
+    padding: 42px 38px 34px;
 
     box-shadow:
-        0 15px 40px rgba(0, 0, 0, 0.12);
+        0 22px 60px rgba(0, 0, 0, 0.10);
+
+    overflow: hidden;
 }
 
-h1 {
+
+/* 标题 */
+
+.header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.header h1 {
     font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -1px;
+}
 
-    margin-bottom: 28px;
+.header p {
+    margin-top: 8px;
+    color: #999;
+    font-size: 14px;
 }
 
 
-/* 专辑封面 */
+/* Cover Flow 区域 */
 
-.cover {
-
+.carousel {
     width: 100%;
-
-    aspect-ratio: 1 / 1;
-
-    border-radius: 20px;
+    height: 360px;
 
     overflow: hidden;
 
-    margin-bottom: 22px;
+    position: relative;
 
-    background: #eeeeee;
-
-    box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.10);
+    display: flex;
+    align-items: center;
 }
 
-.cover img {
 
+/* 封面轨道 */
+
+.cover-track {
+    display: flex;
+
+    gap: var(--cover-gap);
+
+    align-items: center;
+
+    transition:
+        transform 0.55s
+        cubic-bezier(0.22, 1, 0.36, 1);
+
+    will-change: transform;
+}
+
+
+/* 每张封面 */
+
+.cover-card {
+    flex: 0 0 var(--cover-size);
+
+    width: var(--cover-size);
+    height: var(--cover-size);
+
+    border-radius: 24px;
+
+    overflow: hidden;
+
+    cursor: pointer;
+
+    position: relative;
+
+    transform: scale(0.72);
+
+    filter: grayscale(1);
+
+    opacity: 0.48;
+
+    transition:
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.55s ease,
+        opacity 0.55s ease,
+        box-shadow 0.55s ease;
+
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.10);
+}
+
+.cover-card img {
     width: 100%;
     height: 100%;
 
@@ -77,71 +152,159 @@ h1 {
 }
 
 
+/* 当前播放封面 */
+
+.cover-card.active {
+    transform: scale(1);
+
+    filter: grayscale(0);
+
+    opacity: 1;
+
+    cursor: default;
+
+    box-shadow:
+        0 22px 45px rgba(0, 0, 0, 0.20);
+}
+
+
+/* 距离当前超过 1 首的封面隐藏 */
+
+.cover-card.far {
+    opacity: 0;
+    pointer-events: none;
+}
+
+
+/* 左右封面 hover */
+
+.cover-card.near:hover {
+    opacity: 0.7;
+    transform: scale(0.76);
+}
+
+
 /* 歌曲信息 */
 
-.song {
+.song-info {
+    text-align: center;
 
-    background: #f3f3f5;
-
-    border-radius: 16px;
-
-    padding: 16px;
-
-    cursor: pointer;
-
-    transition: 0.25s;
+    margin-top: 8px;
 }
 
-.song:hover {
+.song-title {
+    font-size: 26px;
 
-    background: #e7e7ea;
+    font-weight: 650;
 
-    transform: translateY(-2px);
+    letter-spacing: -0.4px;
 }
 
-.song.active {
+.song-artist {
+    margin-top: 7px;
 
-    background: #e4e4e8;
+    color: #888;
+
+    font-size: 15px;
 }
 
-.title {
+
+/* 控制按钮 */
+
+.controls {
+    margin-top: 24px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    gap: 22px;
+}
+
+.control-button {
+    width: 46px;
+    height: 46px;
+
+    border-radius: 50%;
+
+    border: none;
+
+    background: #f0f0f2;
 
     font-size: 20px;
 
-    font-weight: 600;
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
 }
 
-.artist {
+.control-button:hover {
+    background: #e5e5e8;
 
-    margin-top: 6px;
-
-    font-size: 15px;
-
-    color: #888;
-}
-
-
-/* 播放状态 */
-
-.now-playing {
-
-    margin-top: 20px;
-
-    margin-bottom: 12px;
-
-    font-size: 15px;
-
-    color: #666;
+    transform: scale(1.06);
 }
 
 
-/* 原生播放器 */
+/* 播放按钮 */
+
+.play-button {
+    width: 60px;
+    height: 60px;
+
+    background: #111;
+
+    color: white;
+
+    font-size: 24px;
+}
+
+.play-button:hover {
+    background: #282828;
+}
+
+
+/* 原生进度播放器 */
 
 audio {
-
     width: 100%;
 
-    margin-top: 8px;
+    margin-top: 24px;
+}
+
+
+/* 手机适配 */
+
+@media (max-width: 700px) {
+
+    :root {
+        --cover-size: 220px;
+        --cover-gap: 18px;
+    }
+
+    .player {
+        padding:
+            30px 16px
+            26px;
+    }
+
+    .header h1 {
+        font-size: 30px;
+    }
+
+    .carousel {
+        height: 290px;
+    }
+
+    .cover-card {
+        border-radius: 18px;
+    }
+
+    .song-title {
+        font-size: 22px;
+    }
+
 }
 
 </style>
@@ -155,55 +318,93 @@ audio {
 <div class="player">
 
 
-    <h1>🎧 My Music Room</h1>
+    <div class="header">
 
+        <h1>
+            🎧 Luscinia Radio
+        </h1>
 
-    <!-- 专辑封面 -->
-
-    <div class="cover" id="cover">
-
-        <img
-            src="./cover/test.jpg"
-            alt="Test Music Album Cover"
-        >
+        <p>
+            Now Playing
+        </p>
 
     </div>
 
 
-    <!-- 歌曲信息 -->
-
-    <div class="song" id="songItem">
-
-        <div class="title">
-            Test Music
-        </div>
-
-        <div class="artist">
-            Unknown
-        </div>
-
-    </div>
-
-
-    <!-- 播放状态 -->
+    <!-- 专辑封面轮播 -->
 
     <div
-        class="now-playing"
-        id="nowPlaying"
+        class="carousel"
+        id="carousel"
     >
 
-        当前未播放
+        <div
+            class="cover-track"
+            id="coverTrack"
+        >
+        </div>
 
     </div>
 
 
-    <!-- 播放器 -->
+    <!-- 当前歌曲信息 -->
+
+    <div class="song-info">
+
+        <div
+            class="song-title"
+            id="songTitle"
+        >
+        </div>
+
+        <div
+            class="song-artist"
+            id="songArtist"
+        >
+        </div>
+
+    </div>
+
+
+    <!-- 上一首 / 播放 / 下一首 -->
+
+    <div class="controls">
+
+        <button
+            class="control-button"
+            id="prevButton"
+            aria-label="上一首"
+        >
+            ‹
+        </button>
+
+
+        <button
+            class="control-button play-button"
+            id="playButton"
+            aria-label="播放"
+        >
+            ▶
+        </button>
+
+
+        <button
+            class="control-button"
+            id="nextButton"
+            aria-label="下一首"
+        >
+            ›
+        </button>
+
+    </div>
+
+
+    <!-- 音频 -->
 
     <audio
         id="audio"
         controls
         preload="metadata"
-        src="./music/test.mp3"
     >
     </audio>
 
@@ -213,55 +414,417 @@ audio {
 
 <script>
 
+/* =========================
+   歌曲数据
+   以后增加歌曲主要改这里
+========================= */
+
+const songs = [
+
+    {
+        title: "Test Music",
+        artist: "Unknown",
+        audio: "./music/test.mp3",
+        cover: "./cover/test.jpg"
+    },
+
+    {
+        title: "Test Music 2",
+        artist: "Unknown",
+        audio: "./music/test2.mp3",
+        cover: "./cover/test2.jpg"
+    },
+
+    {
+        title: "Test Music 3",
+        artist: "Unknown",
+        audio: "./music/test3.mp3",
+        cover: "./cover/test3.jpg"
+    }
+
+];
+
+
+/* =========================
+   元素
+========================= */
+
+const carousel =
+document.getElementById("carousel");
+
+const coverTrack =
+document.getElementById("coverTrack");
+
 const audio =
 document.getElementById("audio");
 
-const songItem =
-document.getElementById("songItem");
+const songTitle =
+document.getElementById("songTitle");
 
-const cover =
-document.getElementById("cover");
+const songArtist =
+document.getElementById("songArtist");
 
-const nowPlaying =
-document.getElementById("nowPlaying");
+const prevButton =
+document.getElementById("prevButton");
+
+const nextButton =
+document.getElementById("nextButton");
+
+const playButton =
+document.getElementById("playButton");
 
 
-function playSong() {
+let currentIndex = 0;
 
-    songItem.classList.add("active");
 
-    nowPlaying.innerHTML =
-        "🎵 正在播放：<strong>Test Music</strong>";
+/* =========================
+   创建封面
+========================= */
 
-    audio.play();
+songs.forEach((song, index) => {
+
+    const card =
+    document.createElement("div");
+
+    card.className =
+    "cover-card";
+
+    card.dataset.index =
+    index;
+
+    const img =
+    document.createElement("img");
+
+    img.src =
+    song.cover;
+
+    img.alt =
+    song.title;
+
+    card.appendChild(img);
+
+
+    card.addEventListener(
+        "click",
+        function () {
+
+            if (
+                index !==
+                currentIndex
+            ) {
+
+                playSong(index);
+
+            }
+
+        }
+    );
+
+
+    coverTrack.appendChild(card);
+
+});
+
+
+/* =========================
+   更新 Cover Flow
+========================= */
+
+function updateCarousel(
+    animate = true
+) {
+
+    const cards =
+    document.querySelectorAll(
+        ".cover-card"
+    );
+
+
+    cards.forEach(
+        (card, index) => {
+
+            const distance =
+            Math.abs(
+                index -
+                currentIndex
+            );
+
+
+            card.classList.remove(
+                "active",
+                "near",
+                "far"
+            );
+
+
+            if (
+                index ===
+                currentIndex
+            ) {
+
+                card.classList.add(
+                    "active"
+                );
+
+            }
+
+            else if (
+                distance === 1
+            ) {
+
+                card.classList.add(
+                    "near"
+                );
+
+            }
+
+            else {
+
+                card.classList.add(
+                    "far"
+                );
+
+            }
+
+        }
+    );
+
+
+    const activeCard =
+    cards[currentIndex];
+
+
+    if (!activeCard) {
+        return;
+    }
+
+
+    if (!animate) {
+
+        coverTrack.style.transition =
+        "none";
+
+    }
+
+
+    const carouselWidth =
+    carousel.clientWidth;
+
+
+    const cardWidth =
+    activeCard.offsetWidth;
+
+
+    const styles =
+    getComputedStyle(
+        coverTrack
+    );
+
+
+    const gap =
+    parseFloat(
+        styles.columnGap ||
+        styles.gap ||
+        0
+    );
+
+
+    const position =
+    currentIndex *
+    (cardWidth + gap);
+
+
+    const offset =
+    carouselWidth / 2
+    -
+    cardWidth / 2
+    -
+    position;
+
+
+    coverTrack.style.transform =
+    `translateX(${offset}px)`;
+
+
+    if (!animate) {
+
+        requestAnimationFrame(
+            () => {
+
+                coverTrack.style.transition =
+                "";
+
+            }
+        );
+
+    }
 
 }
 
 
-/* 点击歌曲信息播放 */
+/* =========================
+   加载歌曲
+========================= */
 
-songItem.addEventListener(
+function loadSong(index) {
+
+    currentIndex = index;
+
+
+    const song =
+    songs[currentIndex];
+
+
+    audio.src =
+    song.audio;
+
+
+    songTitle.textContent =
+    song.title;
+
+
+    songArtist.textContent =
+    song.artist;
+
+
+    updateCarousel();
+
+}
+
+
+/* =========================
+   播放歌曲
+========================= */
+
+function playSong(index) {
+
+    loadSong(index);
+
+
+    audio.play();
+
+
+    playButton.textContent =
+    "❚❚";
+
+}
+
+
+/* =========================
+   上一首
+========================= */
+
+function previousSong() {
+
+    let index =
+    currentIndex - 1;
+
+
+    if (index < 0) {
+
+        index =
+        songs.length - 1;
+
+    }
+
+
+    playSong(index);
+
+}
+
+
+/* =========================
+   下一首
+========================= */
+
+function nextSong() {
+
+    let index =
+    currentIndex + 1;
+
+
+    if (
+        index >=
+        songs.length
+    ) {
+
+        index = 0;
+
+    }
+
+
+    playSong(index);
+
+}
+
+
+/* =========================
+   播放 / 暂停
+========================= */
+
+function togglePlay() {
+
+    if (audio.paused) {
+
+        audio.play();
+
+        playButton.textContent =
+        "❚❚";
+
+    }
+
+    else {
+
+        audio.pause();
+
+        playButton.textContent =
+        "▶";
+
+    }
+
+}
+
+
+/* =========================
+   按钮
+========================= */
+
+prevButton.addEventListener(
     "click",
-    playSong
+    previousSong
+);
+
+nextButton.addEventListener(
+    "click",
+    nextSong
+);
+
+playButton.addEventListener(
+    "click",
+    togglePlay
 );
 
 
-/* 点击封面也可以播放 */
+/* =========================
+   一首播放结束后自动下一首
+========================= */
 
-cover.addEventListener(
-    "click",
-    playSong
+audio.addEventListener(
+    "ended",
+    nextSong
 );
 
+
+/* =========================
+   播放状态
+========================= */
 
 audio.addEventListener(
     "play",
     function () {
 
-        songItem.classList.add("active");
-
-        nowPlaying.innerHTML =
-            "🎵 正在播放：<strong>Test Music</strong>";
+        playButton.textContent =
+        "❚❚";
 
     }
 );
@@ -273,8 +836,8 @@ audio.addEventListener(
 
         if (!audio.ended) {
 
-            nowPlaying.innerHTML =
-                "⏸ 已暂停：<strong>Test Music</strong>";
+            playButton.textContent =
+            "▶";
 
         }
 
@@ -282,14 +845,63 @@ audio.addEventListener(
 );
 
 
-audio.addEventListener(
-    "ended",
+/* =========================
+   键盘左右键切歌
+========================= */
+
+document.addEventListener(
+    "keydown",
+    function (event) {
+
+        if (
+            event.key ===
+            "ArrowLeft"
+        ) {
+
+            previousSong();
+
+        }
+
+
+        if (
+            event.key ===
+            "ArrowRight"
+        ) {
+
+            nextSong();
+
+        }
+
+    }
+);
+
+
+/* =========================
+   浏览器窗口变化时重新居中
+========================= */
+
+window.addEventListener(
+    "resize",
     function () {
 
-        songItem.classList.remove("active");
+        updateCarousel(false);
 
-        nowPlaying.innerHTML =
-            "播放结束";
+    }
+);
+
+
+/* =========================
+   初始状态
+========================= */
+
+loadSong(0);
+
+
+window.addEventListener(
+    "load",
+    function () {
+
+        updateCarousel(false);
 
     }
 );
