@@ -640,6 +640,19 @@
         animation-duration: .01ms !important;
       }
     }
+
+    /* 只保留转盘最后面的棕色椭圆轮廓。 */
+    .orbit-shadow {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .orbit-shadow::before,
+    .orbit-shadow::after,
+    .rack-lip,
+    .rack-front {
+      display: none;
+    }
   </style>
 </head>
 
