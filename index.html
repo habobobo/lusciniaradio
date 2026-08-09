@@ -141,6 +141,20 @@
       transform-style: preserve-3d;
     }
 
+    /* 只保留转盘最后面的棕色椭圆轮廓 */
+    .orbit-shadow {
+     background: transparent;
+     box-shadow: none;
+    }
+
+     /* 隐藏内部圆环、中央凸起和前面的棕色实体底座 */
+    .orbit-shadow::before,
+    .orbit-shadow::after,
+    .rack-lip,
+    .rack-front {
+    display: none;
+     }
+
     .orbit-shadow {
       position: absolute;
       z-index: 1;
