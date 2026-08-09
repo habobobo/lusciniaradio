@@ -7,7 +7,6 @@
   <title>Luscinia Radio</title>
 
   <style>
-    
     * {
       box-sizing: border-box;
       margin: 0;
@@ -19,9 +18,10 @@
       --muted: #a69f96;
       --accent: #df7149;
       --panel: #211d19;
-      --cover-size: clamp(230px, 30vw, 332px);
-      --side-x: clamp(205px, 33vw, 355px);
-      --motion: 680ms cubic-bezier(.2, .78, .18, 1);
+      --cover-size: clamp(232px, 28vw, 318px);
+      --near-x: clamp(205px, 25vw, 272px);
+      --far-x: clamp(344px, 41vw, 448px);
+      --motion: 780ms cubic-bezier(.2, .76, .16, 1);
     }
 
     html {
@@ -97,11 +97,11 @@
     }
 
     .stage {
-      height: clamp(345px, 49vw, 492px);
+      height: clamp(370px, 50vw, 510px);
       margin-top: clamp(12px, 2vh, 22px);
       position: relative;
-      perspective: 1250px;
-      perspective-origin: 50% 44%;
+      perspective: 1120px;
+      perspective-origin: 50% 42%;
       overflow: hidden;
       user-select: none;
       touch-action: pan-y;
@@ -109,18 +109,19 @@
 
     .rack-back {
       position: absolute;
-      width: min(890px, 94%);
-      height: 64%;
+      width: min(970px, 96%);
+      height: 66%;
       left: 50%;
       bottom: 54px;
       transform: translateX(-50%) rotateX(-1deg);
-      border-radius: 7px 7px 14px 14px;
+      border-radius: 45% 45% 18px 18px / 13% 13% 18px 18px;
       background:
-        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 23px 100%,
-        linear-gradient(180deg, #201b17, #100e0c);
+        radial-gradient(ellipse at 50% 92%, rgba(130,88,54,.16), transparent 42%),
+        repeating-radial-gradient(ellipse at 50% 112%, rgba(255,255,255,.025) 0 1px, transparent 2px 35px),
+        linear-gradient(180deg, #211c18, #0d0c0a);
       box-shadow:
         inset 0 1px rgba(255,255,255,.05),
-        inset 0 -45px 70px rgba(0,0,0,.52),
+        inset 0 -62px 84px rgba(0,0,0,.62),
         0 42px 75px rgba(0,0,0,.32);
     }
 
@@ -140,11 +141,53 @@
       transform-style: preserve-3d;
     }
 
+    .orbit-shadow {
+      position: absolute;
+      z-index: 1;
+      width: min(900px, 92%);
+      height: 168px;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%) rotateX(67deg);
+      border: 2px solid rgba(181,121,76,.26);
+      border-radius: 50%;
+      background:
+        repeating-radial-gradient(ellipse at center, transparent 0 31px, rgba(210,155,104,.08) 32px 34px),
+        radial-gradient(ellipse at center, rgba(114,68,37,.32), rgba(21,15,11,.9) 66%, transparent 68%);
+      box-shadow:
+        inset 0 0 45px rgba(0,0,0,.65),
+        0 30px 55px rgba(0,0,0,.46);
+      pointer-events: none;
+    }
+
+    .orbit-shadow::before,
+    .orbit-shadow::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .orbit-shadow::before {
+      width: 55%;
+      height: 55%;
+      border: 2px solid rgba(210,151,98,.13);
+    }
+
+    .orbit-shadow::after {
+      width: 30px;
+      height: 30px;
+      background: radial-gradient(circle at 36% 30%, #d7a476, #6e4227 60%, #2e1b11 65%);
+      box-shadow: 0 3px 10px rgba(0,0,0,.5);
+    }
+
     .record-card {
       width: var(--cover-size);
       height: var(--cover-size);
       position: absolute;
-      top: 48%;
+      top: 47%;
       left: 50%;
       z-index: 3;
       border: 0;
@@ -160,25 +203,44 @@
     }
 
     .record-card[data-slot="center"] {
-      z-index: 8;
+      z-index: 10;
       cursor: default;
       opacity: 1;
       filter: grayscale(0) brightness(1);
-      transform: translate3d(-50%, -57%, 105px) rotateY(0deg) scale(1);
+      transform: translate3d(-50%, -62%, 155px) rotateY(0deg) scale(1);
+      transform-origin: center center;
     }
 
-    .record-card[data-slot="left"] {
-      z-index: 3;
-      opacity: .58;
-      filter: grayscale(1) brightness(.62);
-      transform: translate3d(calc(-50% - var(--side-x)), -39%, -105px) rotateY(23deg) scale(.76);
+    .record-card[data-slot="left-near"] {
+      z-index: 6;
+      opacity: .64;
+      filter: grayscale(1) brightness(.62) contrast(.92);
+      transform: translate3d(calc(-50% - var(--near-x)), -45%, -55px) rotateY(39deg) rotateZ(-1deg) scale(.76);
+      transform-origin: right center;
     }
 
-    .record-card[data-slot="right"] {
+    .record-card[data-slot="right-near"] {
+      z-index: 6;
+      opacity: .64;
+      filter: grayscale(1) brightness(.62) contrast(.92);
+      transform: translate3d(calc(-50% + var(--near-x)), -45%, -55px) rotateY(-39deg) rotateZ(1deg) scale(.76);
+      transform-origin: left center;
+    }
+
+    .record-card[data-slot="left-far"] {
       z-index: 3;
-      opacity: .58;
-      filter: grayscale(1) brightness(.62);
-      transform: translate3d(calc(-50% + var(--side-x)), -39%, -105px) rotateY(-23deg) scale(.76);
+      opacity: .34;
+      filter: grayscale(1) brightness(.42) contrast(.88);
+      transform: translate3d(calc(-50% - var(--far-x)), -33%, -235px) rotateY(62deg) rotateZ(-2deg) scale(.58);
+      transform-origin: right center;
+    }
+
+    .record-card[data-slot="right-far"] {
+      z-index: 3;
+      opacity: .34;
+      filter: grayscale(1) brightness(.42) contrast(.88);
+      transform: translate3d(calc(-50% + var(--far-x)), -33%, -235px) rotateY(-62deg) rotateZ(2deg) scale(.58);
+      transform-origin: left center;
     }
 
     .record-card[data-slot="hidden"] {
@@ -187,10 +249,21 @@
       transform: translate3d(-50%, -35%, -180px) scale(.55);
     }
 
-    .record-card[data-slot="left"]:hover,
-    .record-card[data-slot="right"]:hover {
-      opacity: .78;
-      filter: grayscale(.82) brightness(.77);
+    .record-card[data-slot="left-near"]:hover,
+    .record-card[data-slot="right-near"]:hover {
+      opacity: .82;
+      filter: grayscale(.8) brightness(.76);
+    }
+
+    .record-card[data-slot="left-far"]:hover,
+    .record-card[data-slot="right-far"]:hover {
+      opacity: .52;
+      filter: grayscale(.9) brightness(.55);
+    }
+
+    .record-card.is-wrapping {
+      opacity: 0 !important;
+      transition: none !important;
     }
 
     .record-card:focus-visible {
@@ -227,6 +300,11 @@
       right: -4%;
       opacity: .42;
       transform: scale(.96);
+    }
+
+    .record-card[data-slot$="far"] .vinyl {
+      right: 0;
+      opacity: .16;
     }
 
     .sleeve {
@@ -281,23 +359,23 @@
         20px 38px 58px rgba(0,0,0,.58);
     }
 
-    /* 切歌的三个阶段：前抽、架内移动、新封面抽出 */
+    /* 切歌：当前唱片先浮起，整组沿弧线旋转，新唱片再向前落位。 */
     .stage.is-lifting .record-card[data-slot="center"] {
-      transform: translate3d(-50%, -62%, 170px) rotateX(-1deg) scale(1.055);
+      transform: translate3d(-50%, -68%, 215px) rotateX(-1deg) scale(1.045);
     }
 
-    .stage.is-racking .record-card[data-slot="center"] {
-      opacity: .76;
-      filter: grayscale(.86) brightness(.73);
-      transform: translate3d(-50%, -40%, -50px) rotateY(0) scale(.83);
+    .stage.is-rotating .record-card[data-slot="center"] {
+      opacity: .82;
+      filter: grayscale(.72) brightness(.78);
+      transform: translate3d(-50%, -47%, 20px) rotateY(0) scale(.86);
     }
 
-    .stage.is-racking .record-card[data-slot="center"] .vinyl {
+    .stage.is-rotating .record-card[data-slot="center"] .vinyl {
       right: -3%;
-      opacity: .45;
+      opacity: .5;
     }
 
-    .stage.is-racking .record-card[data-slot="center"] .sleeve {
+    .stage.is-rotating .record-card[data-slot="center"] .sleeve {
       box-shadow:
         1px 0 0 rgba(255,255,255,.18),
         5px 7px 0 -3px #625b53,
@@ -307,35 +385,33 @@
     .rack-lip {
       position: absolute;
       left: 50%;
-      bottom: 35px;
+      bottom: 9px;
       z-index: 12;
-      width: min(940px, 98%);
-      height: 55px;
-      transform: translateX(-50%) perspective(700px) rotateX(56deg);
-      transform-origin: bottom;
-      border-radius: 5px 5px 13px 13px;
+      width: min(970px, 98%);
+      height: 116px;
+      transform: translateX(-50%) perspective(760px) rotateX(68deg);
+      transform-origin: center;
+      border-radius: 50%;
       background:
-        linear-gradient(90deg, rgba(255,255,255,.07), transparent 1.5% 98%, rgba(0,0,0,.3)),
-        repeating-linear-gradient(96deg, transparent 0 65px, rgba(61,35,20,.17) 67px 69px, transparent 72px 115px),
-        linear-gradient(180deg, #9a6541, #58351f 74%, #2e1c12);
-      border-top: 1px solid #c28e62;
-      box-shadow: 0 22px 28px rgba(0,0,0,.55), inset 0 -8px 14px rgba(35,18,10,.34);
+        repeating-radial-gradient(ellipse at center, transparent 0 52px, rgba(46,25,14,.28) 54px 57px),
+        radial-gradient(ellipse at 50% 30%, #ad754d, #694127 62%, #2d1a10 74%);
+      border: 2px solid rgba(215,157,108,.52);
+      box-shadow: 0 28px 38px rgba(0,0,0,.58), inset 0 -15px 22px rgba(35,18,10,.38);
     }
 
     .rack-front {
       position: absolute;
       left: 50%;
-      bottom: 28px;
+      bottom: 18px;
       z-index: 13;
-      width: min(948px, 99%);
-      height: 28px;
+      width: min(900px, 92%);
+      height: 20px;
       transform: translateX(-50%);
-      border-radius: 3px 3px 9px 9px;
+      border-radius: 50%;
       background:
-        repeating-linear-gradient(94deg, transparent 0 78px, rgba(50,29,16,.22) 80px 82px, transparent 84px 144px),
-        linear-gradient(180deg, #8a5738, #482b1b 86%);
+        linear-gradient(180deg, #a16b45, #4b2d1b 86%);
       border-top: 1px solid rgba(238,187,137,.42);
-      box-shadow: 0 18px 34px rgba(0,0,0,.48), inset 0 -4px 7px rgba(0,0,0,.28);
+      box-shadow: 0 18px 34px rgba(0,0,0,.5), inset 0 -4px 7px rgba(0,0,0,.3);
     }
 
     .details {
@@ -486,8 +562,9 @@
 
     @media (max-width: 700px) {
       :root {
-        --cover-size: clamp(218px, 67vw, 286px);
-        --side-x: clamp(174px, 54vw, 236px);
+        --cover-size: clamp(216px, 66vw, 282px);
+        --near-x: clamp(156px, 47vw, 222px);
+        --far-x: clamp(260px, 76vw, 350px);
       }
 
       .player {
@@ -504,12 +581,20 @@
         margin-top: 4px;
       }
 
-      .record-card[data-slot="left"] {
-        transform: translate3d(calc(-50% - var(--side-x)), -36%, -105px) rotateY(25deg) scale(.68);
+      .record-card[data-slot="left-near"] {
+        transform: translate3d(calc(-50% - var(--near-x)), -40%, -75px) rotateY(46deg) scale(.66);
       }
 
-      .record-card[data-slot="right"] {
-        transform: translate3d(calc(-50% + var(--side-x)), -36%, -105px) rotateY(-25deg) scale(.68);
+      .record-card[data-slot="right-near"] {
+        transform: translate3d(calc(-50% + var(--near-x)), -40%, -75px) rotateY(-46deg) scale(.66);
+      }
+
+      .record-card[data-slot="left-far"] {
+        transform: translate3d(calc(-50% - var(--far-x)), -27%, -250px) rotateY(68deg) scale(.46);
+      }
+
+      .record-card[data-slot="right-far"] {
+        transform: translate3d(calc(-50% + var(--far-x)), -27%, -250px) rotateY(-68deg) scale(.46);
       }
 
       .rack-back {
@@ -518,11 +603,11 @@
       }
 
       .rack-lip {
-        bottom: 28px;
+        bottom: 2px;
       }
 
       .rack-front {
-        bottom: 21px;
+        bottom: 11px;
       }
 
       .hint {
@@ -566,6 +651,7 @@
 
     <section class="stage" id="stage" aria-label="专辑唱片架">
       <div class="rack-back" aria-hidden="true"></div>
+      <div class="orbit-shadow" aria-hidden="true"></div>
       <div class="records" id="records"></div>
       <div class="rack-lip" aria-hidden="true"></div>
       <div class="rack-front" aria-hidden="true"></div>
@@ -683,9 +769,15 @@
 
     function getSlot(index, centerIndex) {
       const total = songs.length;
-      if (index === centerIndex) return "center";
-      if (index === (centerIndex - 1 + total) % total) return "left";
-      if (index === (centerIndex + 1) % total) return "right";
+      let distance = (index - centerIndex + total) % total;
+
+      if (distance > total / 2) distance -= total;
+
+      if (distance === 0) return "center";
+      if (distance === -1) return "left-near";
+      if (distance === -2) return "left-far";
+      if (distance === 1) return "right-near";
+      if (distance === 2) return "right-far";
       return "hidden";
     }
 
@@ -730,24 +822,42 @@
       queuedIndex = null;
       details.classList.add("is-changing");
 
-      /* 1. 当前唱片先向前、向上抽出。 */
-      stage.classList.add("is-lifting");
-      await wait(240);
+      const forwardSteps = (nextIndex - currentIndex + songs.length) % songs.length;
+      const backwardSteps = (currentIndex - nextIndex + songs.length) % songs.length;
+      const direction = forwardSteps <= backwardSteps ? 1 : -1;
+      const totalSteps = Math.min(forwardSteps, backwardSteps);
 
-      /* 2. 唱片退回架内，同时移动到新的槽位。 */
+      /* 当前唱片先轻轻浮起，再回到旋转轨道。 */
+      stage.classList.add("is-lifting");
+      await wait(210);
+
       stage.classList.remove("is-lifting");
-      stage.classList.add("is-racking");
-      currentIndex = nextIndex;
-      applySlots(currentIndex);
+      stage.classList.add("is-rotating");
+
+      /* 点击第二层唱片时，转盘会逐格旋转；最外侧唱片从背后绕回另一端。 */
+      for (let step = 0; step < totalSteps; step += 1) {
+        const cards = [...records.querySelectorAll(".record-card")];
+        const wrappingSlot = direction > 0 ? "left-far" : "right-far";
+        const wrappingCard = cards.find(card => card.dataset.slot === wrappingSlot);
+
+        if (wrappingCard) wrappingCard.classList.add("is-wrapping");
+
+        currentIndex = (currentIndex + direction + songs.length) % songs.length;
+        applySlots(currentIndex);
+
+        await wait(34);
+        if (wrappingCard) wrappingCard.classList.remove("is-wrapping");
+        await wait(506);
+      }
+
       loadAudio(currentIndex);
-      await wait(520);
 
       updateDetails(currentIndex);
       details.classList.remove("is-changing");
 
-      /* 3. 新的当前唱片从架内向前抽出并恢复原色。 */
-      stage.classList.remove("is-racking");
-      await wait(650);
+      /* 新的当前唱片从圆形轨道向前落位并恢复原色。 */
+      stage.classList.remove("is-rotating");
+      await wait(680);
 
       isSwitching = false;
       if (shouldPlay) safePlay();
