@@ -7,6 +7,7 @@
   <title>Luscinia Radio</title>
 
   <style>
+    
     * {
       box-sizing: border-box;
       margin: 0;
@@ -560,7 +561,6 @@
 <body>
   <main class="player">
     <header class="brand">
-      <div class="eyebrow">Now playing</div>
       <h1>Luscinia Radio</h1>
     </header>
 
@@ -590,7 +590,6 @@
       </div>
     </section>
 
-    <p class="hint">点击两侧唱片切歌 · 键盘 ← → 切歌 · 空格播放或暂停</p>
     <audio id="audio" preload="metadata"></audio>
   </main>
 
@@ -598,20 +597,20 @@
     /* 以后增加或修改歌曲，只需要编辑这里。 */
     const songs = [
       {
-        title: "Test Music",
-        artist: "Unknown",
+        title: "皇后餐厅",
+        artist: "王菀之",
         audio: "./music/test.mp3",
         cover: "./cover/test.jpg"
       },
       {
-        title: "Test Music 2",
-        artist: "Unknown",
+        title: "勇",
+        artist: "杨千嬅",
         audio: "./music/test2.mp3",
         cover: "./cover/test2.jpg"
       },
       {
-        title: "Test Music 3",
-        artist: "Unknown",
+        title: "倾城",
+        artist: "许美静",
         audio: "./music/test3.mp3",
         cover: "./cover/test3.jpg"
       }
