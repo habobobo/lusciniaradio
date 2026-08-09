@@ -1,914 +1,841 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Luscinia Radio</title>
-
-<style>
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --cover-size: 280px;
-    --cover-gap: 34px;
-}
-
-body {
-    min-height: 100vh;
-
-    background: #f5f5f7;
-
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "SF Pro Display",
-        "Segoe UI",
-        sans-serif;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    color: #111;
-}
-
-
-/* 整体播放器 */
-
-.player {
-    width: min(980px, calc(100vw - 32px));
-
-    background: white;
-
-    border-radius: 32px;
-
-    padding: 42px 38px 34px;
-
-    box-shadow:
-        0 22px 60px rgba(0, 0, 0, 0.10);
-
-    overflow: hidden;
-}
-
-
-/* 标题 */
-
-.header {
-    text-align: center;
-    margin-bottom: 32px;
-}
-
-.header h1 {
-    font-size: 38px;
-    font-weight: 700;
-    letter-spacing: -1px;
-}
-
-.header p {
-    margin-top: 8px;
-    color: #999;
-    font-size: 14px;
-}
-
-
-/* Cover Flow 区域 */
-
-.carousel {
-    width: 100%;
-    height: 360px;
-
-    overflow: hidden;
-
-    position: relative;
-
-    display: flex;
-    align-items: center;
-}
-
-
-/* 封面轨道 */
-
-.cover-track {
-    display: flex;
-
-    gap: var(--cover-gap);
-
-    align-items: center;
-
-    transition:
-        transform 0.55s
-        cubic-bezier(0.22, 1, 0.36, 1);
-
-    will-change: transform;
-}
-
-
-/* 每张封面 */
-
-.cover-card {
-    flex: 0 0 var(--cover-size);
-
-    width: var(--cover-size);
-    height: var(--cover-size);
-
-    border-radius: 24px;
-
-    overflow: hidden;
-
-    cursor: pointer;
-
-    position: relative;
-
-    transform: scale(0.72);
-
-    filter: grayscale(1);
-
-    opacity: 0.48;
-
-    transition:
-        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-        filter 0.55s ease,
-        opacity 0.55s ease,
-        box-shadow 0.55s ease;
-
-    box-shadow:
-        0 10px 28px rgba(0, 0, 0, 0.10);
-}
-
-.cover-card img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    display: block;
-}
-
-
-/* 当前播放封面 */
-
-.cover-card.active {
-    transform: scale(1);
-
-    filter: grayscale(0);
-
-    opacity: 1;
-
-    cursor: default;
-
-    box-shadow:
-        0 22px 45px rgba(0, 0, 0, 0.20);
-}
-
-
-/* 距离当前超过 1 首的封面隐藏 */
-
-.cover-card.far {
-    opacity: 0;
-    pointer-events: none;
-}
-
-
-/* 左右封面 hover */
-
-.cover-card.near:hover {
-    opacity: 0.7;
-    transform: scale(0.76);
-}
-
-
-/* 歌曲信息 */
-
-.song-info {
-    text-align: center;
-
-    margin-top: 8px;
-}
-
-.song-title {
-    font-size: 26px;
-
-    font-weight: 650;
-
-    letter-spacing: -0.4px;
-}
-
-.song-artist {
-    margin-top: 7px;
-
-    color: #888;
-
-    font-size: 15px;
-}
-
-
-/* 控制按钮 */
-
-.controls {
-    margin-top: 24px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    gap: 22px;
-}
-
-.control-button {
-    width: 46px;
-    height: 46px;
-
-    border-radius: 50%;
-
-    border: none;
-
-    background: #f0f0f2;
-
-    font-size: 20px;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.2s ease,
-        background 0.2s ease;
-}
-
-.control-button:hover {
-    background: #e5e5e8;
-
-    transform: scale(1.06);
-}
-
-
-/* 播放按钮 */
-
-.play-button {
-    width: 60px;
-    height: 60px;
-
-    background: #111;
-
-    color: white;
-
-    font-size: 24px;
-}
-
-.play-button:hover {
-    background: #282828;
-}
-
-
-/* 原生进度播放器 */
-
-audio {
-    width: 100%;
-
-    margin-top: 24px;
-}
-
-
-/* 手机适配 */
-
-@media (max-width: 700px) {
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#171411">
+  <title>Luscinia Radio</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     :root {
-        --cover-size: 220px;
-        --cover-gap: 18px;
+      --ink: #f3ede4;
+      --muted: #a69f96;
+      --accent: #df7149;
+      --panel: #211d19;
+      --cover-size: clamp(230px, 30vw, 332px);
+      --side-x: clamp(205px, 33vw, 355px);
+      --motion: 680ms cubic-bezier(.2, .78, .18, 1);
+    }
+
+    html {
+      color-scheme: dark;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100svh;
+      overflow-x: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 50% 8%, rgba(141, 105, 71, .19), transparent 37%),
+        linear-gradient(145deg, #15120f 0%, #0c0b0a 58%, #17130f 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+      display: grid;
+      place-items: center;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
     }
 
     .player {
-        padding:
-            30px 16px
-            26px;
+      width: min(1080px, 100%);
+      min-height: 100svh;
+      padding: clamp(24px, 5vh, 56px) clamp(18px, 5vw, 56px) 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      isolation: isolate;
     }
 
-    .header h1 {
-        font-size: 30px;
+    .player::before {
+      content: "";
+      position: absolute;
+      inset: 3% 2%;
+      z-index: -1;
+      border: 1px solid rgba(255,255,255,.05);
+      border-radius: 34px;
+      background: linear-gradient(180deg, rgba(255,255,255,.025), rgba(255,255,255,.005));
+      box-shadow: 0 45px 120px rgba(0,0,0,.36);
+      pointer-events: none;
     }
 
-    .carousel {
-        height: 290px;
+    .brand {
+      text-align: center;
+      position: relative;
+      z-index: 20;
     }
 
-    .cover-card {
-        border-radius: 18px;
+    .eyebrow {
+      color: #a79a8b;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin-top: 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(28px, 4.6vw, 46px);
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -.035em;
+    }
+
+    .stage {
+      height: clamp(345px, 49vw, 492px);
+      margin-top: clamp(12px, 2vh, 22px);
+      position: relative;
+      perspective: 1250px;
+      perspective-origin: 50% 44%;
+      overflow: hidden;
+      user-select: none;
+      touch-action: pan-y;
+    }
+
+    .rack-back {
+      position: absolute;
+      width: min(890px, 94%);
+      height: 64%;
+      left: 50%;
+      bottom: 54px;
+      transform: translateX(-50%) rotateX(-1deg);
+      border-radius: 7px 7px 14px 14px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px) 0 0 / 23px 100%,
+        linear-gradient(180deg, #201b17, #100e0c);
+      box-shadow:
+        inset 0 1px rgba(255,255,255,.05),
+        inset 0 -45px 70px rgba(0,0,0,.52),
+        0 42px 75px rgba(0,0,0,.32);
+    }
+
+    .rack-back::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .25;
+      background:
+        repeating-linear-gradient(97deg, transparent 0 48px, rgba(255,255,255,.025) 49px, transparent 50px 84px),
+        linear-gradient(105deg, transparent 20%, rgba(255,255,255,.05) 38%, transparent 52%);
+    }
+
+    .records {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+    }
+
+    .record-card {
+      width: var(--cover-size);
+      height: var(--cover-size);
+      position: absolute;
+      top: 48%;
+      left: 50%;
+      z-index: 3;
+      border: 0;
+      padding: 0;
+      cursor: pointer;
+      background: transparent;
+      transform-style: preserve-3d;
+      transition:
+        transform var(--motion),
+        filter var(--motion),
+        opacity var(--motion);
+      will-change: transform, filter, opacity;
+    }
+
+    .record-card[data-slot="center"] {
+      z-index: 8;
+      cursor: default;
+      opacity: 1;
+      filter: grayscale(0) brightness(1);
+      transform: translate3d(-50%, -57%, 105px) rotateY(0deg) scale(1);
+    }
+
+    .record-card[data-slot="left"] {
+      z-index: 3;
+      opacity: .58;
+      filter: grayscale(1) brightness(.62);
+      transform: translate3d(calc(-50% - var(--side-x)), -39%, -105px) rotateY(23deg) scale(.76);
+    }
+
+    .record-card[data-slot="right"] {
+      z-index: 3;
+      opacity: .58;
+      filter: grayscale(1) brightness(.62);
+      transform: translate3d(calc(-50% + var(--side-x)), -39%, -105px) rotateY(-23deg) scale(.76);
+    }
+
+    .record-card[data-slot="hidden"] {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate3d(-50%, -35%, -180px) scale(.55);
+    }
+
+    .record-card[data-slot="left"]:hover,
+    .record-card[data-slot="right"]:hover {
+      opacity: .78;
+      filter: grayscale(.82) brightness(.77);
+    }
+
+    .record-card:focus-visible {
+      outline: 2px solid #f3c4a5;
+      outline-offset: 8px;
+      border-radius: 4px;
+    }
+
+    .vinyl {
+      width: 92%;
+      height: 92%;
+      position: absolute;
+      top: 4%;
+      right: -11%;
+      z-index: 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, #171310 0 5.5%, #d2b28f 5.8% 11%, #161310 11.4% 15%, transparent 15.3%),
+        repeating-radial-gradient(circle at 50% 50%, #141414 0 2px, #292827 3px, #0c0c0c 5px, #1d1d1c 7px);
+      box-shadow: 10px 16px 28px rgba(0,0,0,.38);
+      transition: right var(--motion), transform var(--motion), opacity var(--motion);
+    }
+
+    .vinyl::after {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 50%;
+      background: conic-gradient(from 18deg, transparent 0 8%, rgba(255,255,255,.09) 11%, transparent 16% 47%, rgba(255,255,255,.055) 51%, transparent 56% 100%);
+      mix-blend-mode: screen;
+    }
+
+    .record-card:not([data-slot="center"]) .vinyl {
+      right: -4%;
+      opacity: .42;
+      transform: scale(.96);
+    }
+
+    .sleeve {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      overflow: hidden;
+      border-radius: 3px;
+      background: #282420;
+      box-shadow:
+        1px 0 0 rgba(255,255,255,.25),
+        5px 7px 0 -3px #81766a,
+        8px 10px 0 -4px #28231f,
+        15px 26px 36px rgba(0,0,0,.42);
+      transform: translateZ(3px);
+      transition: box-shadow var(--motion);
+    }
+
+    .sleeve::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background:
+        linear-gradient(112deg, rgba(255,255,255,.13), transparent 16% 74%, rgba(0,0,0,.14)),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.016) 0 1px, transparent 1px 3px);
+      mix-blend-mode: soft-light;
+    }
+
+    .sleeve::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(255,255,255,.17);
+      box-shadow: inset 0 0 28px rgba(0,0,0,.15);
+      pointer-events: none;
+    }
+
+    .sleeve img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .record-card[data-slot="center"] .sleeve {
+      box-shadow:
+        1px 0 0 rgba(255,255,255,.3),
+        5px 7px 0 -3px #96897b,
+        9px 11px 0 -4px #29241f,
+        20px 38px 58px rgba(0,0,0,.58);
+    }
+
+    /* 切歌的三个阶段：前抽、架内移动、新封面抽出 */
+    .stage.is-lifting .record-card[data-slot="center"] {
+      transform: translate3d(-50%, -62%, 170px) rotateX(-1deg) scale(1.055);
+    }
+
+    .stage.is-racking .record-card[data-slot="center"] {
+      opacity: .76;
+      filter: grayscale(.86) brightness(.73);
+      transform: translate3d(-50%, -40%, -50px) rotateY(0) scale(.83);
+    }
+
+    .stage.is-racking .record-card[data-slot="center"] .vinyl {
+      right: -3%;
+      opacity: .45;
+    }
+
+    .stage.is-racking .record-card[data-slot="center"] .sleeve {
+      box-shadow:
+        1px 0 0 rgba(255,255,255,.18),
+        5px 7px 0 -3px #625b53,
+        10px 18px 28px rgba(0,0,0,.36);
+    }
+
+    .rack-lip {
+      position: absolute;
+      left: 50%;
+      bottom: 35px;
+      z-index: 12;
+      width: min(940px, 98%);
+      height: 55px;
+      transform: translateX(-50%) perspective(700px) rotateX(56deg);
+      transform-origin: bottom;
+      border-radius: 5px 5px 13px 13px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.07), transparent 1.5% 98%, rgba(0,0,0,.3)),
+        repeating-linear-gradient(96deg, transparent 0 65px, rgba(61,35,20,.17) 67px 69px, transparent 72px 115px),
+        linear-gradient(180deg, #9a6541, #58351f 74%, #2e1c12);
+      border-top: 1px solid #c28e62;
+      box-shadow: 0 22px 28px rgba(0,0,0,.55), inset 0 -8px 14px rgba(35,18,10,.34);
+    }
+
+    .rack-front {
+      position: absolute;
+      left: 50%;
+      bottom: 28px;
+      z-index: 13;
+      width: min(948px, 99%);
+      height: 28px;
+      transform: translateX(-50%);
+      border-radius: 3px 3px 9px 9px;
+      background:
+        repeating-linear-gradient(94deg, transparent 0 78px, rgba(50,29,16,.22) 80px 82px, transparent 84px 144px),
+        linear-gradient(180deg, #8a5738, #482b1b 86%);
+      border-top: 1px solid rgba(238,187,137,.42);
+      box-shadow: 0 18px 34px rgba(0,0,0,.48), inset 0 -4px 7px rgba(0,0,0,.28);
+    }
+
+    .details {
+      min-height: 69px;
+      margin-top: 2px;
+      text-align: center;
+      position: relative;
+      z-index: 20;
     }
 
     .song-title {
-        font-size: 22px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(23px, 3vw, 30px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -.02em;
+      transition: opacity 180ms ease, transform 180ms ease;
     }
 
-}
+    .song-artist {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing: .09em;
+    }
 
-</style>
+    .details.is-changing .song-title,
+    .details.is-changing .song-artist {
+      opacity: 0;
+      transform: translateY(5px);
+    }
 
+    .transport {
+      width: min(490px, 94%);
+      margin: 20px auto 0;
+      position: relative;
+      z-index: 20;
+    }
+
+    .progress-row {
+      display: grid;
+      grid-template-columns: 38px 1fr 38px;
+      align-items: center;
+      gap: 10px;
+      color: #847d75;
+      font-size: 11px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .time:last-child {
+      text-align: right;
+    }
+
+    .progress {
+      width: 100%;
+      height: 3px;
+      border-radius: 99px;
+      appearance: none;
+      background: linear-gradient(to right, var(--accent) var(--progress, 0%), #403a34 var(--progress, 0%));
+      cursor: pointer;
+    }
+
+    .progress::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+      appearance: none;
+      border: 0;
+      border-radius: 50%;
+      background: #efe8df;
+      box-shadow: 0 1px 6px rgba(0,0,0,.35);
+    }
+
+    .progress::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      border: 0;
+      border-radius: 50%;
+      background: #efe8df;
+      box-shadow: 0 1px 6px rgba(0,0,0,.35);
+    }
+
+    .controls {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .control {
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,.07);
+      border-radius: 50%;
+      color: #dbd4cb;
+      background: rgba(255,255,255,.035);
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      font-size: 23px;
+      line-height: 1;
+      transition: transform 180ms ease, background 180ms ease, color 180ms ease;
+    }
+
+    .control:hover {
+      transform: translateY(-2px);
+      color: #fff;
+      background: rgba(255,255,255,.08);
+    }
+
+    .control:active {
+      transform: translateY(0) scale(.96);
+    }
+
+    .play {
+      width: 58px;
+      height: 58px;
+      padding-left: 3px;
+      color: #1b1714;
+      background: #ece4da;
+      border-color: #ece4da;
+      font-size: 19px;
+      box-shadow: 0 10px 26px rgba(0,0,0,.28);
+    }
+
+    .play:hover {
+      color: #111;
+      background: #fff9f0;
+    }
+
+    .play.is-playing {
+      padding-left: 0;
+      font-size: 17px;
+      letter-spacing: -3px;
+    }
+
+    .hint {
+      margin-top: 15px;
+      text-align: center;
+      color: #5f5953;
+      font-size: 10px;
+      letter-spacing: .08em;
+    }
+
+    audio {
+      display: none;
+    }
+
+    @media (max-width: 700px) {
+      :root {
+        --cover-size: clamp(218px, 67vw, 286px);
+        --side-x: clamp(174px, 54vw, 236px);
+      }
+
+      .player {
+        padding-inline: 10px;
+      }
+
+      .player::before {
+        inset-inline: 8px;
+        border-radius: 25px;
+      }
+
+      .stage {
+        height: clamp(330px, 98vw, 420px);
+        margin-top: 4px;
+      }
+
+      .record-card[data-slot="left"] {
+        transform: translate3d(calc(-50% - var(--side-x)), -36%, -105px) rotateY(25deg) scale(.68);
+      }
+
+      .record-card[data-slot="right"] {
+        transform: translate3d(calc(-50% + var(--side-x)), -36%, -105px) rotateY(-25deg) scale(.68);
+      }
+
+      .rack-back {
+        width: 97%;
+        bottom: 46px;
+      }
+
+      .rack-lip {
+        bottom: 28px;
+      }
+
+      .rack-front {
+        bottom: 21px;
+      }
+
+      .hint {
+        display: none;
+      }
+    }
+
+    @media (max-height: 720px) and (min-width: 701px) {
+      :root {
+        --cover-size: 268px;
+      }
+
+      .player {
+        padding-block: 18px;
+      }
+
+      .stage {
+        height: 370px;
+      }
+
+      .transport {
+        margin-top: 12px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+      }
+    }
+  </style>
 </head>
 
-
 <body>
+  <main class="player">
+    <header class="brand">
+      <div class="eyebrow">Now playing</div>
+      <h1>Luscinia Radio</h1>
+    </header>
 
+    <section class="stage" id="stage" aria-label="专辑唱片架">
+      <div class="rack-back" aria-hidden="true"></div>
+      <div class="records" id="records"></div>
+      <div class="rack-lip" aria-hidden="true"></div>
+      <div class="rack-front" aria-hidden="true"></div>
+    </section>
 
-<div class="player">
+    <section class="details" id="details" aria-live="polite">
+      <div class="song-title" id="songTitle"></div>
+      <div class="song-artist" id="songArtist"></div>
+    </section>
 
+    <section class="transport" aria-label="播放器控制">
+      <div class="progress-row">
+        <span class="time" id="currentTime">0:00</span>
+        <input class="progress" id="progress" type="range" min="0" max="100" value="0" step="0.1" aria-label="播放进度">
+        <span class="time" id="duration">0:00</span>
+      </div>
 
-    <div class="header">
+      <div class="controls">
+        <button class="control" id="prevButton" type="button" aria-label="上一首">‹</button>
+        <button class="control play" id="playButton" type="button" aria-label="播放">▶</button>
+        <button class="control" id="nextButton" type="button" aria-label="下一首">›</button>
+      </div>
+    </section>
 
-        <h1>
-            🎧 Luscinia Radio
-        </h1>
+    <p class="hint">点击两侧唱片切歌 · 键盘 ← → 切歌 · 空格播放或暂停</p>
+    <audio id="audio" preload="metadata"></audio>
+  </main>
 
-        <p>
-            Now Playing
-        </p>
-
-    </div>
-
-
-    <!-- 专辑封面轮播 -->
-
-    <div
-        class="carousel"
-        id="carousel"
-    >
-
-        <div
-            class="cover-track"
-            id="coverTrack"
-        >
-        </div>
-
-    </div>
-
-
-    <!-- 当前歌曲信息 -->
-
-    <div class="song-info">
-
-        <div
-            class="song-title"
-            id="songTitle"
-        >
-        </div>
-
-        <div
-            class="song-artist"
-            id="songArtist"
-        >
-        </div>
-
-    </div>
-
-
-    <!-- 上一首 / 播放 / 下一首 -->
-
-    <div class="controls">
-
-        <button
-            class="control-button"
-            id="prevButton"
-            aria-label="上一首"
-        >
-            ‹
-        </button>
-
-
-        <button
-            class="control-button play-button"
-            id="playButton"
-            aria-label="播放"
-        >
-            ▶
-        </button>
-
-
-        <button
-            class="control-button"
-            id="nextButton"
-            aria-label="下一首"
-        >
-            ›
-        </button>
-
-    </div>
-
-
-    <!-- 音频 -->
-
-    <audio
-        id="audio"
-        controls
-        preload="metadata"
-    >
-    </audio>
-
-
-</div>
-
-
-<script>
-
-/* =========================
-   歌曲数据
-   以后增加歌曲主要改这里
-========================= */
-
-const songs = [
-
-    {
+  <script>
+    /* 以后增加或修改歌曲，只需要编辑这里。 */
+    const songs = [
+      {
         title: "Test Music",
         artist: "Unknown",
         audio: "./music/test.mp3",
         cover: "./cover/test.jpg"
-    },
-
-    {
+      },
+      {
         title: "Test Music 2",
         artist: "Unknown",
         audio: "./music/test2.mp3",
         cover: "./cover/test2.jpg"
-    },
-
-    {
+      },
+      {
         title: "Test Music 3",
         artist: "Unknown",
         audio: "./music/test3.mp3",
         cover: "./cover/test3.jpg"
+      }
+    ];
+
+    const stage = document.getElementById("stage");
+    const records = document.getElementById("records");
+    const details = document.getElementById("details");
+    const songTitle = document.getElementById("songTitle");
+    const songArtist = document.getElementById("songArtist");
+    const audio = document.getElementById("audio");
+    const prevButton = document.getElementById("prevButton");
+    const playButton = document.getElementById("playButton");
+    const nextButton = document.getElementById("nextButton");
+    const progress = document.getElementById("progress");
+    const currentTime = document.getElementById("currentTime");
+    const duration = document.getElementById("duration");
+
+    let currentIndex = 0;
+    let isSwitching = false;
+    let queuedIndex = null;
+    let pointerStartX = null;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    function wait(milliseconds) {
+      return new Promise(resolve => window.setTimeout(resolve, reduceMotion ? 0 : milliseconds));
     }
 
-];
+    function createRecords() {
+      songs.forEach((song, index) => {
+        const card = document.createElement("button");
+        card.className = "record-card";
+        card.type = "button";
+        card.dataset.index = index;
+        card.setAttribute("aria-label", `播放 ${song.title}`);
 
+        const vinyl = document.createElement("span");
+        vinyl.className = "vinyl";
+        vinyl.setAttribute("aria-hidden", "true");
 
-/* =========================
-   元素
-========================= */
+        const sleeve = document.createElement("span");
+        sleeve.className = "sleeve";
 
-const carousel =
-document.getElementById("carousel");
+        const image = document.createElement("img");
+        image.src = song.cover;
+        image.alt = `${song.title} 专辑封面`;
+        image.draggable = false;
 
-const coverTrack =
-document.getElementById("coverTrack");
+        sleeve.appendChild(image);
+        card.append(vinyl, sleeve);
+        card.addEventListener("click", () => {
+          if (index !== currentIndex) switchSong(index, true);
+        });
+        records.appendChild(card);
+      });
+    }
 
-const audio =
-document.getElementById("audio");
+    function getSlot(index, centerIndex) {
+      const total = songs.length;
+      if (index === centerIndex) return "center";
+      if (index === (centerIndex - 1 + total) % total) return "left";
+      if (index === (centerIndex + 1) % total) return "right";
+      return "hidden";
+    }
 
-const songTitle =
-document.getElementById("songTitle");
+    function applySlots(centerIndex) {
+      const cards = [...records.querySelectorAll(".record-card")];
+      cards.forEach((card, index) => {
+        const slot = getSlot(index, centerIndex);
+        card.dataset.slot = slot;
+        card.tabIndex = slot === "hidden" ? -1 : 0;
+        card.setAttribute("aria-current", slot === "center" ? "true" : "false");
+      });
+    }
 
-const songArtist =
-document.getElementById("songArtist");
+    function updateDetails(index) {
+      songTitle.textContent = songs[index].title;
+      songArtist.textContent = songs[index].artist;
+    }
 
-const prevButton =
-document.getElementById("prevButton");
+    function loadAudio(index) {
+      audio.src = songs[index].audio;
+      audio.load();
+      progress.value = 0;
+      progress.style.setProperty("--progress", "0%");
+      currentTime.textContent = "0:00";
+      duration.textContent = "0:00";
+    }
 
-const nextButton =
-document.getElementById("nextButton");
+    async function switchSong(nextIndex, shouldPlay = true) {
+      nextIndex = (nextIndex + songs.length) % songs.length;
 
-const playButton =
-document.getElementById("playButton");
-
-
-let currentIndex = 0;
-
-
-/* =========================
-   创建封面
-========================= */
-
-songs.forEach((song, index) => {
-
-    const card =
-    document.createElement("div");
-
-    card.className =
-    "cover-card";
-
-    card.dataset.index =
-    index;
-
-    const img =
-    document.createElement("img");
-
-    img.src =
-    song.cover;
-
-    img.alt =
-    song.title;
-
-    card.appendChild(img);
-
-
-    card.addEventListener(
-        "click",
-        function () {
-
-            if (
-                index !==
-                currentIndex
-            ) {
-
-                playSong(index);
-
-            }
-
-        }
-    );
-
-
-    coverTrack.appendChild(card);
-
-});
-
-
-/* =========================
-   更新 Cover Flow
-========================= */
-
-function updateCarousel(
-    animate = true
-) {
-
-    const cards =
-    document.querySelectorAll(
-        ".cover-card"
-    );
-
-
-    cards.forEach(
-        (card, index) => {
-
-            const distance =
-            Math.abs(
-                index -
-                currentIndex
-            );
-
-
-            card.classList.remove(
-                "active",
-                "near",
-                "far"
-            );
-
-
-            if (
-                index ===
-                currentIndex
-            ) {
-
-                card.classList.add(
-                    "active"
-                );
-
-            }
-
-            else if (
-                distance === 1
-            ) {
-
-                card.classList.add(
-                    "near"
-                );
-
-            }
-
-            else {
-
-                card.classList.add(
-                    "far"
-                );
-
-            }
-
-        }
-    );
-
-
-    const activeCard =
-    cards[currentIndex];
-
-
-    if (!activeCard) {
+      if (nextIndex === currentIndex) {
+        if (shouldPlay) safePlay();
         return;
+      }
+
+      if (isSwitching) {
+        queuedIndex = nextIndex;
+        return;
+      }
+
+      isSwitching = true;
+      queuedIndex = null;
+      details.classList.add("is-changing");
+
+      /* 1. 当前唱片先向前、向上抽出。 */
+      stage.classList.add("is-lifting");
+      await wait(240);
+
+      /* 2. 唱片退回架内，同时移动到新的槽位。 */
+      stage.classList.remove("is-lifting");
+      stage.classList.add("is-racking");
+      currentIndex = nextIndex;
+      applySlots(currentIndex);
+      loadAudio(currentIndex);
+      await wait(520);
+
+      updateDetails(currentIndex);
+      details.classList.remove("is-changing");
+
+      /* 3. 新的当前唱片从架内向前抽出并恢复原色。 */
+      stage.classList.remove("is-racking");
+      await wait(650);
+
+      isSwitching = false;
+      if (shouldPlay) safePlay();
+
+      if (queuedIndex !== null && queuedIndex !== currentIndex) {
+        const target = queuedIndex;
+        queuedIndex = null;
+        switchSong(target, true);
+      }
     }
 
-
-    if (!animate) {
-
-        coverTrack.style.transition =
-        "none";
-
+    function previousSong() {
+      switchSong(currentIndex - 1, true);
     }
 
-
-    const carouselWidth =
-    carousel.clientWidth;
-
-
-    const cardWidth =
-    activeCard.offsetWidth;
-
-
-    const styles =
-    getComputedStyle(
-        coverTrack
-    );
-
-
-    const gap =
-    parseFloat(
-        styles.columnGap ||
-        styles.gap ||
-        0
-    );
-
-
-    const position =
-    currentIndex *
-    (cardWidth + gap);
-
-
-    const offset =
-    carouselWidth / 2
-    -
-    cardWidth / 2
-    -
-    position;
-
-
-    coverTrack.style.transform =
-    `translateX(${offset}px)`;
-
-
-    if (!animate) {
-
-        requestAnimationFrame(
-            () => {
-
-                coverTrack.style.transition =
-                "";
-
-            }
-        );
-
+    function nextSong() {
+      switchSong(currentIndex + 1, true);
     }
 
-}
-
-
-/* =========================
-   加载歌曲
-========================= */
-
-function loadSong(index) {
-
-    currentIndex = index;
-
-
-    const song =
-    songs[currentIndex];
-
-
-    audio.src =
-    song.audio;
-
-
-    songTitle.textContent =
-    song.title;
-
-
-    songArtist.textContent =
-    song.artist;
-
-
-    updateCarousel();
-
-}
-
-
-/* =========================
-   播放歌曲
-========================= */
-
-function playSong(index) {
-
-    loadSong(index);
-
-
-    audio.play();
-
-
-    playButton.textContent =
-    "❚❚";
-
-}
-
-
-/* =========================
-   上一首
-========================= */
-
-function previousSong() {
-
-    let index =
-    currentIndex - 1;
-
-
-    if (index < 0) {
-
-        index =
-        songs.length - 1;
-
+    function safePlay() {
+      const playPromise = audio.play();
+      if (playPromise && typeof playPromise.catch === "function") {
+        playPromise.catch(() => updatePlayButton(false));
+      }
     }
 
-
-    playSong(index);
-
-}
-
-
-/* =========================
-   下一首
-========================= */
-
-function nextSong() {
-
-    let index =
-    currentIndex + 1;
-
-
-    if (
-        index >=
-        songs.length
-    ) {
-
-        index = 0;
-
+    function togglePlay() {
+      if (audio.paused) safePlay();
+      else audio.pause();
     }
 
-
-    playSong(index);
-
-}
-
-
-/* =========================
-   播放 / 暂停
-========================= */
-
-function togglePlay() {
-
-    if (audio.paused) {
-
-        audio.play();
-
-        playButton.textContent =
-        "❚❚";
-
+    function updatePlayButton(isPlaying) {
+      playButton.textContent = isPlaying ? "Ⅱ" : "▶";
+      playButton.classList.toggle("is-playing", isPlaying);
+      playButton.setAttribute("aria-label", isPlaying ? "暂停" : "播放");
     }
 
-    else {
-
-        audio.pause();
-
-        playButton.textContent =
-        "▶";
-
+    function formatTime(seconds) {
+      if (!Number.isFinite(seconds)) return "0:00";
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = Math.floor(seconds % 60).toString().padStart(2, "0");
+      return `${minutes}:${remainingSeconds}`;
     }
 
-}
+    prevButton.addEventListener("click", previousSong);
+    nextButton.addEventListener("click", nextSong);
+    playButton.addEventListener("click", togglePlay);
 
+    audio.addEventListener("play", () => updatePlayButton(true));
+    audio.addEventListener("pause", () => updatePlayButton(false));
+    audio.addEventListener("ended", nextSong);
+    audio.addEventListener("loadedmetadata", () => {
+      duration.textContent = formatTime(audio.duration);
+    });
+    audio.addEventListener("timeupdate", () => {
+      const percent = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+      progress.value = percent;
+      progress.style.setProperty("--progress", `${percent}%`);
+      currentTime.textContent = formatTime(audio.currentTime);
+    });
 
-/* =========================
-   按钮
-========================= */
+    progress.addEventListener("input", () => {
+      if (!audio.duration) return;
+      audio.currentTime = (Number(progress.value) / 100) * audio.duration;
+      progress.style.setProperty("--progress", `${progress.value}%`);
+    });
 
-prevButton.addEventListener(
-    "click",
-    previousSong
-);
+    document.addEventListener("keydown", event => {
+      const activeTag = document.activeElement?.tagName;
+      if (activeTag === "INPUT") return;
 
-nextButton.addEventListener(
-    "click",
-    nextSong
-);
+      if (event.key === "ArrowLeft") previousSong();
+      if (event.key === "ArrowRight") nextSong();
+      if (event.code === "Space") {
+        event.preventDefault();
+        togglePlay();
+      }
+    });
 
-playButton.addEventListener(
-    "click",
-    togglePlay
-);
+    stage.addEventListener("pointerdown", event => {
+      pointerStartX = event.clientX;
+    });
+    stage.addEventListener("pointerup", event => {
+      if (pointerStartX === null) return;
+      const distance = event.clientX - pointerStartX;
+      pointerStartX = null;
+      if (Math.abs(distance) < 48) return;
+      if (distance > 0) previousSong();
+      else nextSong();
+    });
+    stage.addEventListener("pointercancel", () => {
+      pointerStartX = null;
+    });
 
-
-/* =========================
-   一首播放结束后自动下一首
-========================= */
-
-audio.addEventListener(
-    "ended",
-    nextSong
-);
-
-
-/* =========================
-   播放状态
-========================= */
-
-audio.addEventListener(
-    "play",
-    function () {
-
-        playButton.textContent =
-        "❚❚";
-
-    }
-);
-
-
-audio.addEventListener(
-    "pause",
-    function () {
-
-        if (!audio.ended) {
-
-            playButton.textContent =
-            "▶";
-
-        }
-
-    }
-);
-
-
-/* =========================
-   键盘左右键切歌
-========================= */
-
-document.addEventListener(
-    "keydown",
-    function (event) {
-
-        if (
-            event.key ===
-            "ArrowLeft"
-        ) {
-
-            previousSong();
-
-        }
-
-
-        if (
-            event.key ===
-            "ArrowRight"
-        ) {
-
-            nextSong();
-
-        }
-
-    }
-);
-
-
-/* =========================
-   浏览器窗口变化时重新居中
-========================= */
-
-window.addEventListener(
-    "resize",
-    function () {
-
-        updateCarousel(false);
-
-    }
-);
-
-
-/* =========================
-   初始状态
-========================= */
-
-loadSong(0);
-
-
-window.addEventListener(
-    "load",
-    function () {
-
-        updateCarousel(false);
-
-    }
-);
-
-</script>
-
-
+    createRecords();
+    applySlots(currentIndex);
+    updateDetails(currentIndex);
+    loadAudio(currentIndex);
+    updatePlayButton(false);
+  </script>
 </body>
-
 </html>
